@@ -31,16 +31,25 @@ function pfactor($n){
 	}while($n>1 && $d<=$dmax);
 	return $factors;
 }
-$x=$_GET['number']?$_GET['number']:16;
-$factors = pfactor($x);
+$x=$_GET['number'];
 
-$f=array();
-foreach ($factors as $b=>$e){
-	for($i=0;$i<$e;$i++){
-		array_push($f,$b);
+if(is_numeric($x)){
+	if($x<1000000){
+		$factors = pfactor($x);
+
+		$f=array();
+		foreach ($factors as $b=>$e){
+			for($i=0;$i<$e;$i++){
+				array_push($f,$b);
+			}
+		}
+
+		$arr = array('number' => $x, 'decomposition' => $f);
+	}else{
+		$arr = array('number' => $x, 'error' => 'too big number (>1e6)');
 	}
+}else{
+	$arr = array('number' => $x, 'error' => 'not a number');
 }
-
-$arr = array('number' => $x, 'decomposition' => $f);
 echo json_encode($arr);
 ?>
