@@ -31,25 +31,63 @@ function pfactor($n){
 	}while($n>1 && $d<=$dmax);
 	return $factors;
 }
-$x=$_GET['number'];
 
-if(is_numeric($x)){
-	if($x<1000000){
-		$factors = pfactor($x);
+$query  = explode('&', $_SERVER['QUERY_STRING']);
+$params = array();
 
-		$f=array();
-		foreach ($factors as $b=>$e){
-			for($i=0;$i<$e;$i++){
-				array_push($f,$b);
-			}
-		}
-
-		$arr = array('number' => $x, 'decomposition' => $f);
-	}else{
-		$arr = array('number' => $x, 'error' => 'too big number (>1e6)');
-	}
-}else{
-	$arr = array('number' => $x, 'error' => 'not a number');
+foreach( $query as $param )
+{
+  list($name, $value) = explode('=', $param, 2);
+  $params[urldecode($name)][] = urldecode($value);
 }
-echo json_encode($arr);
+
+if(count($params['number'])==1){
+	$x = $_GET['number'];
+	if(is_numeric($x)){
+		if($x<1000000){
+			$factors = pfactor($x);
+
+			$f=array();
+			foreach ($factors as $b=>$e){
+				for($i=0;$i<$e;$i++){
+					array_push($f,$b);
+				}
+			}
+
+			$arr = array('number' => $x, 'decomposition' => $f);
+		}else{
+			$arr = array('number' => $x, 'error' => 'too big number (>1e6)');
+		}
+	}else{
+		$arr = array('number' => $x, 'error' => 'not a number');
+	}
+	echo json_encode($arr);
+}else{
+	$semua = array();
+
+	for($c=0;$c<count($params['number']);$c++){
+		$x = $params['number'][$c];
+		if(is_numeric($x)){
+			if($x<1000000){
+				$factors = pfactor($x);
+
+				$f=array();
+				foreach ($factors as $b=>$e){
+					for($i=0;$i<$e;$i++){
+						array_push($f,$b);
+					}
+				}
+
+				$arr = array('number' => $x, 'decomposition' => $f);
+			}else{
+				$arr = array('number' => $x, 'error' => 'too big number (>1e6)');
+			}
+		}else{
+			$arr = array('number' => $x, 'error' => 'not a number');
+		}
+		//echo json_encode($arr);
+		array_push($semua,($arr));
+	}
+	echo json_encode($semua);
+}
 ?>
