@@ -34,19 +34,13 @@ function pfactor($n){
 $x=$_GET['number']?$_GET['number']:16;
 $factors = pfactor($x);
 
-//print_r($factors);
-
+$f=array();
 foreach ($factors as $b=>$e){
 	for($i=0;$i<$e;$i++){
-		$d.= "$b" . ($e>1?",":"");
+		array_push($f,$b);
 	}
-	$d = rtrim($d,",");
-	$d.=",";
 }
-$d = rtrim($d,",");
-//echo $x."-".$d;
 
-$arr = array('number' => $x, 'decomposition' => "$d");
+$arr = array('number' => $x, 'decomposition' => $f);
 echo json_encode($arr);
-
 ?>
